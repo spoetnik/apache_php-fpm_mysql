@@ -1,0 +1,64 @@
+version: "2"
+services:
+    php:
+        container_name: ${COMPOSE_PROJECT_NAME}_php
+        build: 
+            context: ./php
+            args:
+                - WEB_USER=${WEB_USER}
+                - WEB_GROUP=${WEB_GROUP}
+                - PHP_ROOT_DIR=${PHP_ROOT_DIR}
+        volumes:
+            - ../htdocs:${APACHE_ROOT_DIR}/htdocs
+            - ../logs/php:${PHP_ROOT_DIR}/logs
+            - phpsocket:/socket
+        depends_on:
+            - apache
+            - mysql
+        environment:
+            - PHP_ROOT_DIR=${PHP_ROOT_DIR}
+            - WEB_USER=${WEB_USER}
+            - WEB_GROUP=${WEB_GROUP}
+            - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+    apache:
+        container_name: ${COMPOSE_PROJECT_NAME}_apache
+        build: 
+            context: ./apache2
+            args:
+                - WEB_USER=${WEB_USER}
+                - WEB_GROUP=${WEB_GROUP}
+                - APACHE_ROOT_DIR=${APACHE_ROOT_DIR}
+        volumes:
+            - ../htdocs:${APACHE_ROOT_DIR}/htdocs
+            - ../logs/apache:${APACHE_ROOT_DIR}/logs
+            - phpsocket:/socket
+        ports:
+            - 7080:80
+        environment:
+            - APACHE_ROOT_DIR=${APACHE_ROOT_DIR}
+            - WEB_USER=${WEB_USER}
+            - WEB_GROUP=${WEB_GROUP}
+
+    mysql:
+        container_name: ${COMPOSE_PROJECT_NAME}_mysql
+        build:
+            context: ./mysql
+            args:
+                - MYSQL_CONTAINER_USER=${MYSQL_CONTAINER_USER}
+                - MYSQL_CONTAINER_GROUP=${MYSQL_CONTAINER_GROUP}
+        volumes:
+            - ../database:${MYSQL_DATA_DIR}
+            - ../logs/mysql:${MYSQL_LOG_DIR}
+        environment:
+            - MYSQL_CONTAINER_USER=${MYSQL_CONTAINER_USER}
+            - MYSQL_CONTAINER_GROUP=${MYSQL_CONTAINER_GROUP}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+volumes:
+  phpsocket:
