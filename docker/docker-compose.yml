@@ -21,6 +21,7 @@ services:
             - WEB_GROUP=${WEB_GROUP}
             - SERVICE_TAGS=traefik.enable=true,traefik.frontend.entryPoints=https\,http,traefik.frontend.rule=Host:tweedehandskite.nl\,www.tweedehandskite.nl\,sellyourkite.com\,www.sellyourkite.com
             - SERVICE_NAME=tweedehandskites
+        restart: unless-stopped
     php:
         container_name: ${COMPOSE_PROJECT_NAME}_php
         build: 
@@ -40,6 +41,8 @@ services:
         environment:
             - PHP_ROOT_DIR=${PHP_ROOT_DIR}
             - PHP_MAIL_HOST=${PHP_MAIL_HOST}
+            - PHP_MAIL_PORT=${PHP_MAIL_PORT}
+            - PHP_MAIL_FROM=${PHP_MAIL_FROM}
             - PHP_MAIL_USERNAME=${PHP_MAIL_USERNAME}
             - PHP_MAIL_PASSWORD=${PHP_MAIL_PASSWORD}
             - WEB_USER=${WEB_USER}
@@ -49,6 +52,7 @@ services:
             - MYSQL_USER=${MYSQL_USER}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD}
             - MYSQL_DATABASE=${MYSQL_DATABASE}
+        restart: unless-stopped
     mysql:
         container_name: ${COMPOSE_PROJECT_NAME}_mysql
         build:
@@ -66,5 +70,6 @@ services:
             - MYSQL_USER=${MYSQL_USER}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD}
             - MYSQL_DATABASE=${MYSQL_DATABASE}
+        restart: unless-stopped
 volumes:
   phpsocket:
