@@ -1,29 +1,5 @@
 version: "2"
 services:
-    php:
-        container_name: ${COMPOSE_PROJECT_NAME}_php
-        build: 
-            context: ./php
-            args:
-                - WEB_USER=${WEB_USER}
-                - WEB_GROUP=${WEB_GROUP}
-                - PHP_ROOT_DIR=${PHP_ROOT_DIR}
-        volumes:
-            - ../htdocs:${APACHE_ROOT_DIR}/htdocs
-            - ../logs/php:${PHP_ROOT_DIR}/logs
-            - phpsocket:/socket
-        depends_on:
-            - apache
-            - mysql
-        environment:
-            - PHP_ROOT_DIR=${PHP_ROOT_DIR}
-            - WEB_USER=${WEB_USER}
-            - WEB_GROUP=${WEB_GROUP}
-            - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-            - MYSQL_USER=${MYSQL_USER}
-            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-            - MYSQL_DATABASE=${MYSQL_DATABASE}
     apache:
         container_name: ${COMPOSE_PROJECT_NAME}_apache
         build: 
@@ -34,6 +10,7 @@ services:
                 - APACHE_ROOT_DIR=${APACHE_ROOT_DIR}
         volumes:
             - ../htdocs:${APACHE_ROOT_DIR}/htdocs
+            - ../assets:${APACHE_ROOT_DIR}/htdocs/site/assets
             - ../logs/apache:${APACHE_ROOT_DIR}/logs
             - phpsocket:/socket
         ports:
@@ -42,7 +19,36 @@ services:
             - APACHE_ROOT_DIR=${APACHE_ROOT_DIR}
             - WEB_USER=${WEB_USER}
             - WEB_GROUP=${WEB_GROUP}
-
+            - SERVICE_TAGS=traefik.enable=true,traefik.frontend.entryPoints=https\,http,traefik.frontend.rule=Host:tweedehandskite.nl\,www.tweedehandskite.nl\,sellyourkite.com\,www.sellyourkite.com
+            - SERVICE_NAME=tweedehandskites
+    php:
+        container_name: ${COMPOSE_PROJECT_NAME}_php
+        build: 
+            context: ./php
+            args:
+                - WEB_USER=${WEB_USER}
+                - WEB_GROUP=${WEB_GROUP}
+                - PHP_ROOT_DIR=${PHP_ROOT_DIR}
+        volumes:
+            - ../htdocs:${APACHE_ROOT_DIR}/htdocs
+            - ../assets:${APACHE_ROOT_DIR}/htdocs/site/assets
+            - ../logs/php:${PHP_ROOT_DIR}/logs
+            - phpsocket:/socket
+        depends_on:
+            - apache
+            - mysql
+        environment:
+            - PHP_ROOT_DIR=${PHP_ROOT_DIR}
+            - PHP_MAIL_HOST=${PHP_MAIL_HOST}
+            - PHP_MAIL_USERNAME=${PHP_MAIL_USERNAME}
+            - PHP_MAIL_PASSWORD=${PHP_MAIL_PASSWORD}
+            - WEB_USER=${WEB_USER}
+            - WEB_GROUP=${WEB_GROUP}
+            - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
     mysql:
         container_name: ${COMPOSE_PROJECT_NAME}_mysql
         build:
