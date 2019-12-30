@@ -1,5 +1,9 @@
 set -e
 
+if ! [[ f .env ]]; then
+    mv env.txt .env
+fi
+
 # Get de vars from the .env-file
 export $(egrep -v '^#' .env | xargs)
 
