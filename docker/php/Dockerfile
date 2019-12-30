@@ -11,6 +11,7 @@ RUN deluser ${WEB_USER} \
 RUN apk add --no-cache  libpng \
                         libpng-dev \
                         libzip-dev \
+                        zlib-dev \
                         ca-certificates \
                         msmtp \
         && docker-php-ext-configure zip --with-libzip \
@@ -22,7 +23,7 @@ RUN apk add --no-cache  libpng \
                 pdo \
                 pdo_mysql \
                 zip \
-        && apk del libpng-dev libzip-dev \
+        && apk del libpng-dev libzip-dev zlib-dev \
         && rm -rf /var/cache/apk/*
 
 COPY ./zz-socket.conf ${PHP_ROOT_DIR}/php-fpm.d/zz-socket.conf
