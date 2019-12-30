@@ -19,8 +19,6 @@ services:
             - APACHE_ROOT_DIR=${APACHE_ROOT_DIR}
             - WEB_USER=${WEB_USER}
             - WEB_GROUP=${WEB_GROUP}
-            - SERVICE_TAGS=traefik.enable=true,traefik.frontend.entryPoints=https\,http,traefik.frontend.rule=Host:tweedehandskite.nl\,www.tweedehandskite.nl\,sellyourkite.com\,www.sellyourkite.com
-            - SERVICE_NAME=tweedehandskites
         restart: unless-stopped
     php:
         container_name: ${COMPOSE_PROJECT_NAME}_php
