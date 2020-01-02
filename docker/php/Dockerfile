@@ -10,11 +10,15 @@ RUN deluser ${WEB_USER} \
 
 RUN apk add --no-cache  libpng \
                         libpng-dev \
-                        zlib-dev \
+                        freetype-dev \
+                        libjpeg-turbo-dev \
                         libzip-dev\
                         ca-certificates \
                         msmtp \
+        && docker-php-ext-configure zip --with-libzip \
+        && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
         && docker-php-ext-install \
+                iconv \
                 gd \
                 opcache \
                 sockets \
