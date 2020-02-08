@@ -1,4 +1,4 @@
-FROM php:7.3.13-fpm-alpine
+FROM php:7.4.1-fpm-alpine
 
 ARG WEB_USER
 ARG WEB_GROUP
@@ -11,12 +11,16 @@ RUN deluser ${WEB_USER} \
 RUN apk add --no-cache  libpng \
                         libpng-dev \
                         freetype-dev \
+                        libwebp-dev \
                         libjpeg-turbo-dev \
                         libzip-dev\
                         ca-certificates \
                         msmtp \
-        && docker-php-ext-configure zip --with-libzip \
-        && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+        && docker-php-ext-configure zip \
+        && docker-php-ext-configure gd \
+            --with-freetype \
+            --with-jpeg \
+            --with-webp \
         && docker-php-ext-install \
                 iconv \
                 gd \
