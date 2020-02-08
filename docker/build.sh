@@ -1,6 +1,6 @@
 set -e
 
-if ! [[ f .env ]]; then
+if ! [[ -f .env ]]; then
     mv env.txt .env
 fi
 
